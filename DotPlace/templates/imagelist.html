@@ -1,0 +1,17 @@
+<html>
+	<body>
+		<h2>
+			Images in database
+		</h2>
+		
+{% for i in images %}
+		<p>
+			id : {{i.id}}
+			<br>
+			path : {{i.path}}
+			<br>
+			<img src="{{i.path}}">
+		</p>
+{% endfor %}
+	</body>
+</html>
