@@ -61,7 +61,7 @@ def NewArticle():
 	content = urllib.parse.unquote_plus(request.form['content'])
 	position_id = request.form['dotId']
 	time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.form['time']))
-	thumbnail_id = request.form['thumbnail_id']
+	thumbnail_id = request.form.get('thumbnail_id', 0)
 	
 	article = Article(content=content, dot_id=position_id, time=time, thumbnail_id=thumbnail_id)
 	session.add(article)
@@ -71,7 +71,7 @@ def NewArticle():
 
 @new_blueprint.route('/image/new', methods=['POST'])
 def NewImage():
-	data = bytearray(request.form['data'], "utf-8")
+	data = request.form['data'].encode()
 	newImage = Image(path="", thumbnail_path="")
 	session.add(newImage)
 	session.flush()

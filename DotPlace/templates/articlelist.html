@@ -9,8 +9,10 @@
 			id : {{a.id}}
 			<br>
 			content : {{a.content}}
+{% if a.thumbnail_id != 0: %}
 			<br>
 			thumbnail : {{a.thumbnail_id}}
+{% endif %}
 		</p>
 {% endfor %}
 	</body>
