@@ -3,8 +3,10 @@ app = Flask(__name__)
 
 from list import list_blueprint
 from new import new_blueprint
+from jsons import json_blueprint
 app.register_blueprint(list_blueprint)
 app.register_blueprint(new_blueprint)
+app.register_blueprint(json_blueprint)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -18,12 +20,6 @@ session = DBSession()
 def MainPage():
 	return render_template('index.html')
 
-@app.route('/user/json')
-def UserJson():
-	users = session.query(User).all()
-	return jsonify(Users=[u.serialize for u in users])
-
-@app.route('/trip/<int:trip_id>')
 def TripView(trip_id):
 	trip = session.query(Trip).filter_by(id=trip_id).one()
 	pos = session.query(Position).filter_by(trip_id=trip_id).all()
