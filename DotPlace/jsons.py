@@ -15,3 +15,8 @@ session = DBSession()
 def UserJson():
     users = session.query(User).all()
     return jsonify(Users=[u.serialize for u in users])
+
+@json_blueprint.route('/article/json')
+def ArticleJson():
+    articles = session.query(Article).all()
+    return jsonify(Articles=[a.serialize for a in articles])
