@@ -12,19 +12,19 @@ def parseDatetime(time):
 	)
 
 def year(time):
-	return int(time[0:4])
+	return int(time[12:16])
 
 def month(time):
-	return int(time[5:7])
-
-def date(time):
 	return int(time[8:10])
 
+def date(time):
+	return int(time[5:7])
+
 def hour(time):
-	return int(time[11:13])
+	return int(time[17:19])
 
 def minute(time):
-	return int(time[14:16])
+	return int(time[20:22])
 
 def second(time):
-	return int(time[17:19])
+	return int(time[23:25])
