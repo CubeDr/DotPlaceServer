@@ -4,6 +4,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
+import datetimeparser
 
 Base = declarative_base()
 
@@ -78,7 +79,7 @@ class Position(Base):
 			'id' : self.id,
 			'lat' : self.lat,
 			'lng' : self.lng,
-			'time' : self.time,
+			'time' : datetimeparser.datetimeToString(self.time),
 			'type' : self.type,
 			'duration' : self.duration,
 			'trip_id' : self.trip_id
@@ -102,7 +103,7 @@ class Article(Base):
 			'id' : self.id,
 			'content' : self.content,
 			'dot_id' : self.dot_id,
-			'time' : self.time,
+			'time' : datetimeparser.datetimeToString(self.time),
 			'thumbnail_id' : self.thumbnail_id
 		}
 	
