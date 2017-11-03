@@ -4,9 +4,11 @@ app = Flask(__name__)
 from list import list_blueprint
 from new import new_blueprint
 from jsons import json_blueprint
+from image import image_blueprint
 app.register_blueprint(list_blueprint)
 app.register_blueprint(new_blueprint)
 app.register_blueprint(json_blueprint)
+app.register_blueprint(image_blueprint)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -48,7 +50,6 @@ def ImageExists(image_id):
 		return str(1)
 	else :
 		return str(0)
-
 
 if __name__ == '__main__':
 	app.debug = True

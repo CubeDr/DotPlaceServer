@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 list_blueprint = Blueprint('list_blueprint', __name__)
 
 import database
-from database import Image, User, Trip, Position, Article
+from database import User, Trip, Position, Article
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -10,11 +10,6 @@ from sqlalchemy.orm import sessionmaker
 engine = create_engine('sqlite:///dotplace.db')
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
-@list_blueprint.route('/image')
-def ImageList():
-	images = session.query(Image).all()
-	return render_template('imagelist.html', images=images)
 
 @list_blueprint.route('/user')
 def UserList():

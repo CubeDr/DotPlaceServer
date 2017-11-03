@@ -68,25 +68,3 @@ def NewArticle():
 	session.commit()
 	
 	return str(article.id), str(301)
-
-@new_blueprint.route('/image/new', methods=['POST'])
-def NewImage():
-	data = request.form['data'].encode()
-	newImage = Image(path="", thumbnail_path="")
-	session.add(newImage)
-	session.flush()
-	
-	newId = newImage.id
-	
-	imagePath = './images/' + str(newId) + '.jpeg'
-	imageFile = open(imagePath, 'wb')
-	imageFile.write(data)
-	imageFile.close()
-	
-	newImage.path = imagePath
-	newImage.thumbnail_path = imagePath # Change it to thumbnail path
-	session.add(newImage)
-	session.commit()
-	
-	return str(newImage.id), str(301)
-	
