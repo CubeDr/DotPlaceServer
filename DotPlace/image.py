@@ -35,11 +35,12 @@ def Images():
             session.flush()
             
             result += ' ' + str(newId)
+        session.commit()
         return result, str(301)
 
     else:
         images = session.query(Image).all()
-        return render_template('imagelist.html', images=images)
+        return render_template('imagelist.html', imageCount=len(images), images=images)
 
 @image_blueprint.route('/image/<imageId>')
 def GetImage(imageId):

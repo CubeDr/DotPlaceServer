@@ -58,13 +58,11 @@ def NewPosition():
 
 @new_blueprint.route('/article/new', methods=['POST'])
 def NewArticle():
-	content = urllib.parse.unquote_plus(request.form['content'])
-	position_id = request.form['dotId']
-	time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.form['time']))
-	thumbnail_id = request.form.get('thumbnail_id', 0)
-	
-	article = Article(content=content, dot_id=position_id, time=time, thumbnail_id=thumbnail_id)
-	session.add(article)
-	session.commit()
-	
-	return str(article.id), str(301)
+        content = urllib.parse.unquote_plus(request.form['content'])
+        position_id = request.form['dotId']
+        time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.form['time']))
+        article = Article(content=content, dot_id=position_id, time=time, thumbnail_id=thumbnail_id)
+        session.add(article)
+        session.commit()
+        
+        return str(article.id), str(301)

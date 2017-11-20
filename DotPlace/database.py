@@ -92,10 +92,8 @@ class Article(Base):
 	content = Column(String(500), nullable=False)
 	dot_id = Column(Integer, ForeignKey('position.id'))
 	time = Column(DateTime, nullable=False)
-	thumbnail_id = Column(Integer, ForeignKey('image.id'))
 	
 	position = relationship(Position)
-	image = relationship(Image)
 	
 	@property
 	def serialize(self):
@@ -103,9 +101,17 @@ class Article(Base):
 			'id' : self.id,
 			'content' : self.content,
 			'dot_id' : self.dot_id,
-			'time' : datetimeparser.datetimeToString(self.time),
-			'thumbnail_id' : self.thumbnail_id
+			'time' : datetimeparser.datetimeToString(self.time)
 		}
+
+class ImageInArticle(Base):
+        __tablename__ = 'image_in_article'
+
+        image_id = Column(Integer, ForeignKey('image.id'), primary_key=True)
+        article_id = Column(Integer, ForeignKey('article.id'), primary_key=True)
+
+        image = relationship(Image)
+        article = relationship(Article)
 	
 engine = create_engine('sqlite:///dotplace.db')
 Base.metadata.create_all(engine)

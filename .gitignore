@@ -1,3 +1,5 @@
 dotplace.db
 *.pyc
 *~
+*.jpeg
+images
