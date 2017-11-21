@@ -29,39 +29,36 @@ def NewUser():
 def NewTrip():
 	title = urllib.parse.unquote_plus(request.form['title'])
 	owner = request.form['owner']
-	
+	count = int(request.form['count'])
+
 	trip = Trip(title=title, owner=owner)
 	session.add(trip)
-	session.commit()
+	session.flush()
+
+        for i in range(count):
+                pContent = request.form['position'+str(i)].split()
+                pTime = datetimeparser.parseDatetime(request.form['position'+str(i)+'_time'])
+                p = Position(lat=pContent[0], lng=pContent[1], type=pContent[2], duration=pContent[3], trip_id=trip.id, time=pTime)
+                session.add(p)
+                session.flush()
+
+        session.commit()
 
 	print ('inserted trip ' + str(trip.id))
 
 	return str(trip.id), str(301)
 
-@new_blueprint.route('/position/new', methods=['POST'])
-def NewPosition():
-	lat = request.form['lat']
-	lng = request.form['lng']
-	time = datetimeparser.parseDatetime(request.form['time'])
-	type = request.form['type']
-	duration = request.form['duration']
-	trip_id = request.form['trip_id']
-	
-	pos = Position(lat=lat, lng=lng, time=time, type=type, duration=duration, trip_id=trip_id)
-	
-	session.add(pos)
-	session.commit()
-	
-	print ('inserted position ' + str(pos.id))
-	
-	return str(pos.id), str(301)
-
 @new_blueprint.route('/article/new', methods=['POST'])
 def NewArticle():
         content = urllib.parse.unquote_plus(request.form['content'])
-        position_id = request.form['dotId']
+        trip_id = request.form['tripId']
+        position_index = request.form['dotIndex']
         time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.form['time']))
-        article = Article(content=content, dot_id=position_id, time=time, thumbnail_id=thumbnail_id)
+
+        positions = Position.query.filter_by(trip_id=trip_id).order_by(time).all()
+        position = positions[position_index]
+
+        article = Article(content=content, dot_id=position.id, time=time)
         session.add(article)
         session.commit()
         
