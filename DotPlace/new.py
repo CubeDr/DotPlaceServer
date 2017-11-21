@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request
 new_blueprint = Blueprint('new_blueprint', __name__)
 
+UPLOAD_FOLDER = './images/'
+
 import database
 from database import Image, User, Trip, Position, Article
 
@@ -51,15 +53,35 @@ def NewTrip():
 @new_blueprint.route('/article/new', methods=['POST'])
 def NewArticle():
         content = urllib.parse.unquote_plus(request.form['content'])
-        trip_id = request.form['tripId']
-        position_index = request.form['dotIndex']
-        time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.form['time']))
+        trip_id = request.form['trip_d']
+        position_index = request.form['dot_ndex']
+        thumbnail_index = request.form['thumbnail_index']
+        count = request.form['count']
 
+        # Find the dot writing to
         positions = Position.query.filter_by(trip_id=trip_id).order_by(time).all()
         position = positions[position_index]
 
-        article = Article(content=content, dot_id=position.id, time=time)
+        # Insert article into DB
+        article = Article(content=content, dot_id=position.id, time=datetime.datetime.now())
         session.add(article)
+        session.flush()
+
+        # Insert images
+        for i in range(count):
+                file = request.files['image'+str(i)]
+
+                newImage = Image(path='', thumbnail_path='')
+                session.add(newImage)
+                session.flush()
+
+                newId = newImage.id
+
+                newImage.path = str(newId)+'.jpeg'
+                file.save(UPLOAD_FOLDER + newImage.path)
+                session.add(newImage)
+                session.flush()
+
         session.commit()
-        
+
         return str(article.id), str(301)
