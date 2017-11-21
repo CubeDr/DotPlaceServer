@@ -37,14 +37,14 @@ def NewTrip():
 	session.add(trip)
 	session.flush()
 
-        for i in range(count):
-                pContent = request.form['position'+str(i)].split()
-                pTime = datetimeparser.parseDatetime(request.form['position'+str(i)+'_time'])
-                p = Position(lat=pContent[0], lng=pContent[1], type=pContent[2], duration=pContent[3], trip_id=trip.id, time=pTime)
-                session.add(p)
-                session.flush()
+	for i in range(count):
+		pContent = request.form['position'+str(i)].split()
+		pTime = datetimeparser.parseDatetime(request.form['position'+str(i)+'_time'])
+		p = Position(lat=pContent[0], lng=pContent[1], type=pContent[2], duration=pContent[3], trip_id=trip.id, time=pTime)
+		session.add(p)
+		session.flush()
 
-        session.commit()
+	session.commit()
 
 	print ('inserted trip ' + str(trip.id))
 
@@ -52,36 +52,36 @@ def NewTrip():
 
 @new_blueprint.route('/article/new', methods=['POST'])
 def NewArticle():
-        content = urllib.parse.unquote_plus(request.form['content'])
-        trip_id = request.form['trip_d']
-        position_index = request.form['dot_ndex']
-        thumbnail_index = request.form['thumbnail_index']
-        count = request.form['count']
+	content = urllib.parse.unquote_plus(request.form['content'])
+	trip_id = request.form['trip_d']
+	position_index = request.form['dot_ndex']
+	thumbnail_index = request.form['thumbnail_index']
+	count = request.form['count']
 
-        # Find the dot writing to
-        positions = Position.query.filter_by(trip_id=trip_id).order_by(time).all()
-        position = positions[position_index]
+	# Find the dot writing to
+	positions = Position.query.filter_by(trip_id=trip_id).order_by(time).all()
+	position = positions[position_index]
 
-        # Insert article into DB
-        article = Article(content=content, dot_id=position.id, time=datetime.datetime.now())
-        session.add(article)
-        session.flush()
+	# Insert article into DB
+	article = Article(content=content, dot_id=position.id, time=datetime.datetime.now())
+	session.add(article)
+	session.flush()
 
-        # Insert images
-        for i in range(count):
-                file = request.files['image'+str(i)]
+	# Insert images
+	for i in range(count):
+		file = request.files['image'+str(i)]
 
-                newImage = Image(path='', thumbnail_path='')
-                session.add(newImage)
-                session.flush()
+		newImage = Image(path='', thumbnail_path='')
+		session.add(newImage)
+		session.flush()
 
-                newId = newImage.id
+		newId = newImage.id
 
-                newImage.path = str(newId)+'.jpeg'
-                file.save(UPLOAD_FOLDER + newImage.path)
-                session.add(newImage)
-                session.flush()
+		newImage.path = str(newId)+'.jpeg'
+		file.save(UPLOAD_FOLDER + newImage.path)
+		session.add(newImage)
+		session.flush()
 
-        session.commit()
+	session.commit()
 
-        return str(article.id), str(301)
+	return str(article.id), str(301)
