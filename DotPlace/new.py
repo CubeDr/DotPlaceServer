@@ -4,7 +4,7 @@ new_blueprint = Blueprint('new_blueprint', __name__)
 UPLOAD_FOLDER = './images/'
 
 import database
-from database import Image, User, Trip, Position, Article
+from database import Image, User, Trip, Position, Article, ImageInArticle
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -13,6 +13,7 @@ engine = create_engine('sqlite:///dotplace.db')
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+import datetime
 import datetimeparser
 import urllib
 
@@ -53,13 +54,13 @@ def NewTrip():
 @new_blueprint.route('/article/new', methods=['POST'])
 def NewArticle():
 	content = urllib.parse.unquote_plus(request.form['content'])
-	trip_id = request.form['trip_d']
-	position_index = request.form['dot_ndex']
-	thumbnail_index = request.form['thumbnail_index']
-	count = request.form['count']
+	trip_id = int(request.form['trip_id'])
+	position_index = int(request.form['dot_index'])
+	thumbnail_index = int(request.form['thumbnail_index'])
+	count = int(request.form['count'])
 
 	# Find the dot writing to
-	positions = Position.query.filter_by(trip_id=trip_id).order_by(time).all()
+	positions = session.query(Position).filter_by(trip_id=trip_id).order_by(Position.time).all()
 	position = positions[position_index]
 
 	# Insert article into DB
@@ -80,6 +81,10 @@ def NewArticle():
 		newImage.path = str(newId)+'.jpeg'
 		file.save(UPLOAD_FOLDER + newImage.path)
 		session.add(newImage)
+		session.flush()
+
+		newIiA = ImageInArticle(image_id=newId, article_id=article.id)
+		session.add(newIiA)
 		session.flush()
 
 	session.commit()
