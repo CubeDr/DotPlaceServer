@@ -4,7 +4,7 @@ json_blueprint = Blueprint('json_blueprint', __name__)
 import database
 from database import Image, User, Trip, Position, Article
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 
 engine = create_engine('sqlite:///dotplace.db')
@@ -18,5 +18,5 @@ def UserJson():
 
 @json_blueprint.route('/article/json')
 def ArticleJson():
-    articles = session.query(Article).all()
+    articles = session.query(Article).order_by(desc(Article.time)).all()
     return jsonify(Articles=[a.serialize for a in articles])
