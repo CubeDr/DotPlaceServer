@@ -16,6 +16,7 @@ session = DBSession()
 import datetime
 import datetimeparser
 import urllib
+import PIL.Image
 
 @new_blueprint.route('/user/new', methods=['POST'])
 def NewUser():
@@ -53,6 +54,7 @@ def NewTrip():
 
 @new_blueprint.route('/article/new', methods=['POST'])
 def NewArticle():
+	print('POST article')
 	content = urllib.parse.unquote_plus(request.form['content'])
 	trip_id = int(request.form['trip_id'])
 	position_index = int(request.form['dot_index'])
@@ -80,12 +82,24 @@ def NewArticle():
 
 		newImage.path = str(newId)+'.jpeg'
 		file.save(UPLOAD_FOLDER + newImage.path)
+
+		newImage.thumbnail_path = UPLOAD_FOLDER + str(newId) + '.thumbnail.jpeg'
+		im = PIL.Image.open(UPLOAD_FOLDER + newImage.path)
+		im.thumbnail( (300, 250) )
+		im.save(newImage.thumbnail_path)
+
 		session.add(newImage)
 		session.flush()
 
 		newIiA = ImageInArticle(image_id=newId, article_id=article.id)
 		session.add(newIiA)
 		session.flush()
+
+		if i == thumbnail_index:
+			article.thumbnail_id = newId
+			session.add(article)
+			session.flush()
+		print('\timage ' + str(newId) + ' written')
 
 	session.commit()
 

@@ -1,6 +1,6 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -92,8 +92,10 @@ class Article(Base):
         content = Column(String(500), nullable=False)
         dot_id = Column(Integer, ForeignKey('position.id'))
         time = Column(DateTime, nullable=False)
+        thumbnail_id = Column(Integer, ForeignKey('image.id'))
 
         position = relationship(Position)
+        image = relationship(Image)
 
         @property
         def serialize(self):
@@ -101,7 +103,8 @@ class Article(Base):
                         'id' : self.id,
                         'content' : self.content,
                         'dot_id' : self.dot_id,
-                        'time' : datetimeparser.datetimeToString(self.time)
+                        'time' : datetimeparser.datetimeToString(self.time),
+                        'thumbnail_id' : self.thumbnail_id
                 }
 
 class ImageInArticle(Base):
