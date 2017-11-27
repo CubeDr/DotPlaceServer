@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 new_blueprint = Blueprint('new_blueprint', __name__)
 
 UPLOAD_FOLDER = './images/'
+THUMBNAIL_SIZE = (800, 600)
 
 import database
 from database import Image, User, Trip, Position, Article, ImageInArticle
@@ -28,6 +29,15 @@ def NewUser():
 	session.commit()
 	
 	return str(user.id), str(301)
+
+@new_blueprint.route('/trip/exists')
+def ExistsTrip():
+        title = urllib.parse.unquote_plus(request.args.get('title'))
+        owner = int(request.args.get('owner'))
+        count = int(request.args.get('count'))
+        time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.args.get('time')))
+
+        return 'Exists'
 	
 @new_blueprint.route('/trip/new', methods=['POST'])
 def NewTrip():
@@ -85,7 +95,7 @@ def NewArticle():
 
 		newImage.thumbnail_path = UPLOAD_FOLDER + str(newId) + '.thumbnail.jpeg'
 		im = PIL.Image.open(UPLOAD_FOLDER + newImage.path)
-		im.thumbnail( (300, 250) )
+		im.thumbnail( THUMBNAIL_SIZE )
 		im.save(newImage.thumbnail_path)
 
 		session.add(newImage)

@@ -27,14 +27,6 @@ def TripView(trip_id):
 	pos = session.query(Position).filter_by(trip_id=trip_id).all()
 	return render_template('trip.html', trip=trip, positions=pos)
 
-@app.route('/trip/exists/<int:trip_id>')
-def TripExists(trip_id):
-	trip = session.query(Trip).filter_by(id=trip_id)
-	if trip.count() > 0 :
-		return str(1)
-	else :
-		return str(0)
-	
 @app.route('/position/exists/<int:position_id>')
 def PositionExists(position_id):
 	position = session.query(Position).filter_by(id=position_id)
