@@ -42,10 +42,11 @@ class Trip(Base):
 
         id = Column(Integer, primary_key=True)
         title = Column(String(40))
-        thumbnail_id = Column(Integer, ForeignKey('image.id'))
+#        thumbnail_id = Column(Integer, ForeignKey('image.id'))
         owner = Column(Integer, ForeignKey('user.id'))
+        owner_index = Column(Integer, nullable=False) # trip's db id on owner's local machine
 
-        image = relationship(Image)
+#        image = relationship(Image)
         user = relationship(User)
 
         @property
@@ -53,7 +54,7 @@ class Trip(Base):
                 return {
                         'id' : self.id,
                         'title' : self.title,
-                        'thumbnail_id' : self.thumbnail_id,
+#                        'thumbnail_id' : self.thumbnail_id,
                         'owner' : self.owner,
 
                         'image' : self.image,

@@ -30,22 +30,23 @@ def NewUser():
 	
 	return str(user.id), str(301)
 
-@new_blueprint.route('/trip/exists')
-def ExistsTrip():
-        title = urllib.parse.unquote_plus(request.args.get('title'))
-        owner = int(request.args.get('owner'))
-        count = int(request.args.get('count'))
-        time = datetimeparser.parseDatetime(urllib.parse.unquote_plus(request.args.get('time')))
+@new_blueprint.route('/trip/id/<owner>/<owner_index>')
+def TripId(owner, owner_index):
+	trip = session.query(Trip).filter_by(owner=owner, owner_index=owner_index).first()
+	if trip==None:
+		return '0'
+	return str(trip.id)
 
-        return 'Exists'
-	
 @new_blueprint.route('/trip/new', methods=['POST'])
 def NewTrip():
 	title = urllib.parse.unquote_plus(request.form['title'])
-	owner = request.form['owner']
+	owner = int(request.form['owner'])
+	owner_index = int(request.form['owner_index'])
 	count = int(request.form['count'])
 
-	trip = Trip(title=title, owner=owner)
+	# Inser duplicate check here
+	
+	trip = Trip(title=title, owner=owner, owner_index=owner_index)
 	session.add(trip)
 	session.flush()
 
@@ -112,5 +113,5 @@ def NewArticle():
 		print('\timage ' + str(newId) + ' written')
 
 	session.commit()
-
+	print('Inserted article ' + str(article.id))
 	return str(article.id), str(301)
